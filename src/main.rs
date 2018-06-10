@@ -6,7 +6,7 @@ use std::net::TcpStream;
 use std::{thread, time};
 use argparse::{ArgumentParser, Store};
 use std::fs::File;
-use netrat::Config;
+use netrat::config::Config;
 
 
 fn main() {
