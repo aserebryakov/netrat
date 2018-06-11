@@ -1,7 +1,15 @@
 use std;
 use std::fs::File;
-use std::io::Read;
+use std::io::{self, Read};
 
+
+pub fn create(filename: String) -> Box<DataReader> {
+    if filename.is_empty() {
+        Box::new(StandardInputReader::new())
+    } else {
+        Box::new(FileReader::new(filename))
+    }
+}
 
 pub trait DataReader {
     fn read_data(&mut self) -> Result<Vec<u8>, std::io::Error>;
@@ -20,6 +28,7 @@ impl FileReader {
     }
 }
 
+
 impl DataReader for FileReader {
     fn read_data(&mut self) -> Result<Vec<u8>, std::io::Error> {
         if self.read == true {
@@ -31,5 +40,25 @@ impl DataReader for FileReader {
         file.read_to_end(&mut out)?;
         self.read = true;
         Ok(out)
+    }
+}
+
+
+pub struct StandardInputReader {
+}
+
+
+impl StandardInputReader {
+    pub fn new() -> StandardInputReader {
+        StandardInputReader{}
+    }
+}
+
+
+impl DataReader for StandardInputReader {
+    fn read_data(&mut self) -> Result<Vec<u8>, std::io::Error> {
+        let mut line = String::new();
+        io::stdin().read_line(&mut line)?;
+        Ok(line.into_bytes())
     }
 }

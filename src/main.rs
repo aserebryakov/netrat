@@ -1,11 +1,10 @@
 extern crate argparse;
 extern crate netrat;
 
-use std::io::{self, Write, Read};
+use std::io::{self, Write};
 use std::net::TcpStream;
 use std::{thread, time};
 use argparse::{ArgumentParser, Store};
-use std::fs::File;
 use netrat::config::Config;
 
 
@@ -34,25 +33,12 @@ fn main() {
         None => time::Duration::from_millis(0),
     };
 
+    let mut data_reader = netrat::data_reader::create(config.input);
+
     loop {
-        let data = read_data(&config.input).unwrap();
+        let data = data_reader.read_data().unwrap();
         send_data(&mut stream, data.as_slice(), interval);
         break;
-    }
-}
-
-
-fn read_data(input: &String) -> Result<Vec<u8>, std::io::Error> {
-    if input.is_empty() {
-        let mut line = String::new();
-        io::stdin().read_line(&mut line)?;
-        Ok(line.into_bytes())
-    }
-    else {
-        let mut out = Vec::<u8>::new();
-        let mut file = File::open(input.as_str())?;
-        file.read_to_end(&mut out)?;
-        Ok(out)
     }
 }
 
