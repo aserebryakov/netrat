@@ -1,9 +1,7 @@
 extern crate argparse;
 extern crate netrat;
 
-use std::io::{self, Write};
 use std::net::TcpStream;
-use std::{thread, time};
 use argparse::{ArgumentParser, Store};
 use netrat::config::Config;
 
@@ -26,31 +24,13 @@ fn main() {
     let target = format!("{}:{}", config.host, config.port);
     println!("Connecting to {}...", target);
 
-    let mut stream = TcpStream::connect(target).unwrap();
-
-    let interval = match config.rate.value {
-        Some(r) => time::Duration::from_millis((1024f64 / r) as u64),
-        None => time::Duration::from_millis(0),
-    };
-
+    let stream = TcpStream::connect(target).unwrap();
     let mut data_reader = netrat::data_reader::create(config.input);
+    let mut data_sender = netrat::data_sender::create(stream, config.rate);
 
     loop {
         let data = data_reader.read_data().unwrap();
-        send_data(&mut stream, data.as_slice(), interval);
+        data_sender.send_data(data.as_slice()).unwrap();
         break;
     }
 }
-
-
-fn send_data(stream: &mut TcpStream, data: &[u8], interval: time::Duration) {
-    println!("Sending data...");
-
-    for b in data {
-        stream.write(&[*b]).unwrap();
-        thread::sleep(interval);
-        io::stdout().write(&[*b]).unwrap();
-        io::stdout().flush().unwrap();
-    }
-}
-
