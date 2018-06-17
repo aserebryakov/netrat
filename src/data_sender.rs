@@ -1,9 +1,8 @@
+use config::Rate;
 use std;
-use config::Rate as Rate;
 use std::io::{self, Write};
-use std::net::TcpStream as TcpStream;
+use std::net::TcpStream;
 use std::{thread, time};
-
 
 pub fn create(stream: TcpStream, rate: Rate) -> Box<DataSender> {
     match rate.value {
@@ -12,24 +11,20 @@ pub fn create(stream: TcpStream, rate: Rate) -> Box<DataSender> {
     }
 }
 
-
 pub trait DataSender {
     fn send_data(&mut self, data: &[u8]) -> Result<(), std::io::Error>;
 }
-
 
 pub struct RateSender {
     stream: TcpStream,
     rate: f64,
 }
 
-
 impl RateSender {
     fn new(stream: TcpStream, rate: f64) -> RateSender {
-        RateSender{stream, rate}
+        RateSender { stream, rate }
     }
 }
-
 
 impl DataSender for RateSender {
     fn send_data(&mut self, data: &[u8]) -> Result<(), std::io::Error> {

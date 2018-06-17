@@ -9,7 +9,9 @@ impl std::str::FromStr for Rate {
     type Err = ParseFloatError;
 
     fn from_str(s: &str) -> Result<Rate, ParseFloatError> {
-        Ok(Rate{value: f64::from_str(&s).ok()})
+        Ok(Rate {
+            value: f64::from_str(&s).ok(),
+        })
     }
 }
 
@@ -25,7 +27,7 @@ impl Config {
         Config {
             host: String::from("127.0.0.1"),
             port: String::from("40000"),
-            rate: Rate{value: None},
+            rate: Rate { value: None },
             input: String::new(),
         }
     }
