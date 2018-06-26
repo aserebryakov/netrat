@@ -7,7 +7,7 @@ use std::{thread, time};
 pub fn create(stream: TcpStream, rate: Rate) -> Box<DataSender> {
     match rate.value {
         Some(r) => Box::new(RateSender::new(stream, r)),
-        None => panic!("Sending date without rate is not implemented"),
+        None => Box::new(BulkSender::new(stream)),
     }
 }
 
@@ -38,6 +38,28 @@ impl DataSender for RateSender {
             io::stdout().write(&[*b])?;
             io::stdout().flush()?;
         }
+
+        Ok(())
+    }
+}
+
+pub struct BulkSender {
+    stream: TcpStream,
+}
+
+impl BulkSender {
+    fn new(stream: TcpStream) -> BulkSender {
+        BulkSender { stream }
+    }
+}
+
+impl DataSender for BulkSender {
+    fn send_data(&mut self, data: &[u8]) -> Result<(), std::io::Error> {
+        println!("Sending data...");
+
+        self.stream.write(&data)?;
+        io::stdout().write(&data)?;
+        io::stdout().flush()?;
 
         Ok(())
     }
