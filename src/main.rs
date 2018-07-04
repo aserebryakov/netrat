@@ -25,8 +25,8 @@ fn main() {
             .refer(&mut config.rate)
             .add_option(&["-r", "--rate"], Store, "Data transfer rate");
         parser
-            .refer(&mut config.input)
-            .add_option(&["-i", "--input"], Store, "Input file");
+            .refer(&mut config.input_file)
+            .add_option(&["-f", "--file"], Store, "Input file");
         parser.parse_args_or_exit();
     }
 
@@ -34,7 +34,7 @@ fn main() {
     println!("Connecting to {}...", target);
 
     let stream = TcpStream::connect(target).unwrap();
-    let mut data_reader = netrat::data_reader::create(config.input);
+    let mut data_reader = netrat::data_reader::create(config.input_file);
     let mut data_sender = netrat::data_sender::create(stream, config.rate);
 
     loop {

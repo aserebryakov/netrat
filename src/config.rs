@@ -19,7 +19,7 @@ pub struct Config {
     pub host: String,
     pub port: String,
     pub rate: Rate,
-    pub input: String,
+    pub input_file: String,
 }
 
 impl Config {
@@ -28,7 +28,7 @@ impl Config {
             host: String::from("127.0.0.1"),
             port: String::from("40000"),
             rate: Rate { value: None },
-            input: String::new(),
+            input_file: String::new(),
         }
     }
 }

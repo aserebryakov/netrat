@@ -25,7 +25,7 @@ optional arguments:
   - [ ] -l
   - [ ] -n
   - [ ] -k
-  - [ ] -i Make it compatible with netcat
+  - [ ] -i
   - [ ] port[s] Multiple ports case
   - [ ] -4
   - [ ] -6
